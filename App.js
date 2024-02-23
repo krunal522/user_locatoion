@@ -5,17 +5,12 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import firestore from '@react-native-firebase/firestore';
 
-import { updatePetDetails } from './global/userLocation/user'
-
 
 const { height, width } = Dimensions.get('window');
 
-// create a component
+// create a component move marker click after show longitude and latitude details show here 
 const LocationUser = (props) => {
   const [marker, setMarker] = useState('')
-
-  const [destinationCords, setDestination] = useState('')
-
   const [coordinate, setCoordinate] = useState({
     focusedLocation: {
       latitude: 19.0760,
@@ -25,9 +20,6 @@ const LocationUser = (props) => {
     },
   })
 
-  console.log('current location Data=>>>>>!!!!',
-    coordinate.focusedLocation.latitude, coordinate.focusedLocation.longitude)
-
   useEffect(() => {
     requrestLocationPermission()
     UpdateUser()
@@ -35,7 +27,6 @@ const LocationUser = (props) => {
 
   const requrestLocationPermission = async () => {
     Geolocation.getCurrentPosition(pos => {
-      console.log('current Location data Latitude and Longitude data=>>>!!', pos)
       const coordsEvent = {
         nativeEvent: {
           coordinate: {
@@ -72,7 +63,6 @@ const LocationUser = (props) => {
       location_latitude: coordinate.focusedLocation.latitude,
       location_longitude: coordinate.focusedLocation.longitude,
     }
-    console.log('locationdon!!!!!!!!!!!!!!!!!!!!!!!!!!!', obj)
     try {
       firestore().collection('userLocation').add(obj).then((response) => {
         console.log('responsed daataaa=>>!!!!!', response)
@@ -101,9 +91,9 @@ const LocationUser = (props) => {
       }
     })
 
-    if (marker) {
-      marker.animateMarkerToCoordinate(newCoordinate);
-    }
+    // if (marker) {
+    //   marker.animateMarkerToCoordinate(newCoordinate,200);
+    // }
 
   };
 
@@ -127,6 +117,11 @@ const LocationUser = (props) => {
             onPress={animateMarker}
           >
             <Marker
+              // onDragEnd={() => {
+              //   const newCoordinate = marker.coordinate();
+              //   marker.animateMarkerToCoordinate(newCoordinate, 1000);
+              // }}
+              pointerEvents={'auto'}
               centerOffset={{ x: 0, y: 0 }}
               anchor={{ x: 0.69, y: 1 }}
               stopPropagation={true}
